@@ -1,23 +1,9 @@
 import math
 
 type
-  Layer*[InNodes, OutNodes: static int] = object
-    weights: matrix[InNodes, OutNodes, float64]
-    biases: vector[OutNodes, float64]
+  Layer*[NumIn, NumOut: static int] = object
+    weights: matrix[NumOut, NumIn, float64]
+    biases: vector[NumOut, float64]
 
-proc calcOutputs*(layer: Layer, inputs: array[layer.InNodes, float64]): vector[layer.OutNodes, float64] =
-  var
-    weightedInput: float64 = 0.0
-    nodeOut = 0
-    nodeIn = 0
-
-  while nodeOut < layer.OutNodes:
-    weightedInput = layer.biases[nodeOut]
-    nodeIn = 0
-
-    while nodeIn < layer.InNodes:
-      weightedInput += inputs[nodeIn] * layer.weights[nodeIn, nodeOut]
-      inc nodeIn
-
-    result[nodeOut] = weightedInput
-    inc nodeOut
+proc calcOutputs*(layer: Layer, inputs: vector[layer.NumIn, float64]): vector[layer.NumOut, float64] =
+  let z: vector[layer.NumOut,float64] = (inputs * layer.weights) + layer.biases #Weighted Sum
