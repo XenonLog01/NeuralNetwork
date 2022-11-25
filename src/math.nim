@@ -1,13 +1,14 @@
 import std/math
 
-type
-  matrix*[X, Y: static int, T] = array[X, array[Y, T]]
-  vector*[X: static int, T] = array[X, T]
-
 
 #[
   Linear Algebra Operators
 ]#
+
+type
+  matrix*[X, Y: static int, T] = array[X, array[Y, T]]
+  vector*[X: static int, T] = array[X, T]
+
 proc `*`*[X, T](v1, v2: vector[X, T]): float64 = #Dot Product
   for i in v1.low .. v1.high:
     result += float64(v1[i] * v2[i])
@@ -29,21 +30,23 @@ proc `+`*[X, T](v1, v2: vector[X, T]): vector[X, T] = #Vector Addition
 
 
 #[
-  Math Functions
+  Rectifiers
 ]#
 
-proc sigmoid*(x: int): SomeNumber = 
-  return float64 1/(1 + E^(-x))
+proc sigmoid*(x: float | int): float | int = 
+  return 1/(1 + pow(E, float -x))
 
-proc tanh*(x: SomeNumber): SomeNumber =
-  return float64 (E^x - E^(-x))/(E^x + E^(-x))
+proc tanh*(x: float | int): float | int =
+  return float64 (pow(E, float x) - pow(E, float -x))/(pow(E, float x) + pow(E, float -x))
 
-proc relu*(x: SomeNumber): SomeNumber =
+proc relu*(x: float | int): float | int =
   if x <= 0: return 0
   else: return x
 
-proc modRelu*(x: SomeNumber, funct: proc): SomeNumber =
+proc modRelu[T, I](x: T, rect: proc(x: T): I): I =
   if x <= 0: return 0
-  else: return funct(x)
+  else: return rect(x)
 
-echo sigmoid(1)
+proc `>-`*[X: static int, T, I](a: vector[X, T], action: proc(x: T): I): vector[X, I] =
+  for i, x in a:
+    result[i] = action(x)
