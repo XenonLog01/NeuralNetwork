@@ -43,10 +43,18 @@ proc relu*(x: float | int): float | int =
   if x <= 0: return 0
   else: return x
 
-proc modRelu[T, I](x: T, rect: proc(x: T): I): I =
+proc modRelu[T, I](x: T, rect: proc(x: T): I): I = #Takes in a rect function, returns a max with output func(x)
   if x <= 0: return 0
   else: return rect(x)
 
-proc `>-`*[X: static int, T, I](a: vector[X, T], action: proc(x: T): I): vector[X, I] =
+proc `>-`*[X: static int, T, I](a: vector[X, T], action: proc(x: T): I): vector[X, I] = #Applies a function to a vector
   for i, x in a:
     result[i] = action(x)
+
+
+#[
+  Other Functions
+]#
+proc getHighest*[X](a: vector[X, float | int]): float | int = 
+  for x in a:
+    if x > result: result = x
